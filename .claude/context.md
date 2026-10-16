@@ -4,10 +4,10 @@ project: polymarket-signals
 updated: 2026-10-15
 ---
 
-## Statut : 🟢 Actif — v0.2 (site web + pipeline quotidien) prête, NON poussée
+## Statut : 🟢 Actif — v0.2 en ligne (dépôt public AdrienCasse/polymarket-signals, GitHub Pages)
 
 **Dernière session :** 2026-10-15
-**Prochaine étape :** confirmer avec Adrien : (1) dépôt GitHub PUBLIC `AdrienCasse/polymarket-signals` (Pages gratuit seulement en public), (2) identité git des commits (gmail perso vs noreply `128650043+AdrienCasse@users.noreply.github.com`). Puis commit initial, push, `gh api repos/AdrienCasse/polymarket-signals/pages -X POST -f build_type=workflow`, `gh workflow run pipeline.yml`, vérifier slugs de tags et contrats au 1er run.
+**Prochaine étape :** vérifier le site en ligne (https://adriencasse.github.io/polymarket-signals/) et les runs quotidiens ; puis v0.3 calibration (marchés résolus) avec l'agent bias-analyst ; ajuster la watchlist (récession : un seul marché, Japon ; inflation trop large, 205 marchés dont prix de l'essence).
 
 ## Ce qui a été fait
 - Projet créé (`git init`, rien de commité) : uv + Python 3.12, `src/polysignals/`, `transform/` (dbt-duckdb), `academy/`, `docs/`, CI GitHub Actions, Dependabot
@@ -19,6 +19,8 @@ updated: 2026-10-15
 - Académie : 7 leçons (00 architecture → 06 cadre légal) ; sous-agents `macro-tutor` et `bias-analyst`
 
 - v0.2 : site Next.js 16 statique (`web/` : tableau de bord, page marché en 4 temps, Académie + simulateur d'écart, Sous le capot), `polysignals export` → `web/data/gold.json` (refusé si tests dbt KO ou 0 marché), workflow `pipeline.yml` (cron 05:17 UTC : ingest live → branche orpheline `data` → dbt → export → Pages OIDC), `ci.yml` = `make check` (Python + web). Démo séparée dans `data-demo/`. 30 tests pytest, make check vert. Captures headless vérifiées (desktop + mobile)
+
+- 2026-10-17 : dépôt public créé (commits en noreply), Pages activé, 1er run live OK : 72 événements, 100 historiques, contrats conformes, tags valides (fed 38, inflation 30, ecb 3, recession 1), ~336 Ko/jour de bronze. Correctifs : guillemets YAML du workflow + actionlint dans `make lint` ; marchés jamais échangés exclus du mart (17) ; tableau de bord par événement (issue la plus probable) car la liquidité se concentre sur des issues improbables ; actions GitHub épinglées sur des versions précises
 
 ## Décisions récentes
 - Stack DuckDB + dbt + bronze en fichiers ; lecture seule par construction ; watchlist = seed dbt unique (détail dans decisions.md)

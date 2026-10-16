@@ -120,3 +120,6 @@ select
     academy_lesson,
     as_of
 from quality
+-- Marché jamais échangé et carnet quasi vide : il n'existe AUCUNE probabilité lisible.
+-- On l'exclut plutôt que d'afficher un chiffre inventé (cf. academy/02).
+where implied_probability is not null

@@ -29,9 +29,9 @@ jobs:
     permissions:
       contents: write # uniquement pour pousser la branche `data`
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
 
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10.0.1
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -70,7 +70,7 @@ jobs:
       - name: "Export gold (refusé si un test a échoué ou si aucun marché)"
         run: make web-data DATA_DIR="$LAKE"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version-file: web/.nvmrc
           cache: npm
@@ -85,7 +85,7 @@ jobs:
           npm ci --ignore-scripts --no-fund --no-audit
           npm run build
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: web/out
 
@@ -101,4 +101,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.1

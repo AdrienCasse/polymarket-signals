@@ -4,7 +4,7 @@ import { Change } from "@/components/Change";
 import { Freshness } from "@/components/Freshness";
 import { QualityBadge } from "@/components/QualityBadge";
 import { Sparkline } from "@/components/Sparkline";
-import { getGold, marketsByTheme, type Market } from "@/lib/data";
+import { type EventHeadline, getGold, type Market, themeViews } from "@/lib/data";
 import { pct } from "@/lib/format";
 
 export default function Dashboard() {
@@ -31,13 +31,23 @@ export default function Dashboard() {
         <p>Une variation <strong className="text-text-1">grisée</strong> fait moins de 3 points : souvent du bruit, pas une information.</p>
       </aside>
 
-      {marketsByTheme().map(({ theme, markets }) => (
+      {themeViews().map(({ theme, headlines, markets }) => (
         <section key={theme.theme_id} className="mt-12" aria-labelledby={`t-${theme.theme_id}`}>
           <h2 id={`t-${theme.theme_id}`} className="text-lg font-semibold text-text-1">{theme.theme_label}</h2>
           <p className="mt-1 max-w-3xl text-sm text-text-3">{theme.why_it_matters}</p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {markets.map((m) => <MarketCard key={m.market_id} m={m} />)}
+            {headlines.map((h) => <HeadlineCard key={h.event_title} h={h} />)}
           </ul>
+          <details className="mt-3 text-sm">
+            <summary className="cursor-pointer text-text-3 hover:text-text-1">
+              Tous les marchés du thème ({markets.length})
+            </summary>
+            <ul className="mt-3 divide-y divide-line rounded-[var(--radius-card)] border border-line">
+              {[...markets].sort((a, b) => (b.liquidity_usd ?? 0) - (a.liquidity_usd ?? 0)).map((m) => (
+                <MarketRow key={m.market_id} m={m} />
+              ))}
+            </ul>
+          </details>
         </section>
       ))}
 
@@ -48,7 +58,8 @@ export default function Dashboard() {
   );
 }
 
-function MarketCard({ m }: { m: Market }) {
+function HeadlineCard({ h }: { h: EventHeadline }) {
+  const m = h.lead;
   const dim = m.signal_quality === "inexploitable";
   return (
     <li>
@@ -56,7 +67,11 @@ function MarketCard({ m }: { m: Market }) {
         href={`/marches/${m.market_slug}/`}
         className="group flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-card p-4 transition-colors hover:border-line-hi hover:bg-hover"
       >
-        <p className="text-[15px] leading-snug text-text-1">{m.question}</p>
+        <p className="text-xs text-text-3">
+          {h.event_title}
+          {h.outcomes > 1 ? ` · issue la plus probable sur ${h.outcomes}` : ""}
+        </p>
+        <p className="mt-1 text-[15px] leading-snug text-text-1">{m.question}</p>
         <div className="mt-4 flex items-end justify-between gap-3">
           <div>
             <p className={`tabular text-3xl font-semibold ${dim ? "text-text-3 line-through decoration-1" : "text-gold"}`}>
@@ -70,6 +85,22 @@ function MarketCard({ m }: { m: Market }) {
           <QualityBadge quality={m.signal_quality} />
           <span className="text-xs text-text-3 group-hover:text-gold">Comprendre →</span>
         </div>
+      </Link>
+    </li>
+  );
+}
+
+function MarketRow({ m }: { m: Market }) {
+  return (
+    <li>
+      <Link href={`/marches/${m.market_slug}/`} className="flex items-center justify-between gap-4 px-4 py-2.5 hover:bg-hover">
+        <span className="text-text-2">{m.question}</span>
+        <span className="flex shrink-0 items-center gap-3">
+          <span className={`tabular ${m.signal_quality === "inexploitable" ? "text-text-3" : "text-text-1"}`}>
+            {pct(m.implied_probability)}
+          </span>
+          <QualityBadge quality={m.signal_quality} />
+        </span>
       </Link>
     </li>
   );

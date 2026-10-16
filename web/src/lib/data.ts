@@ -100,9 +100,47 @@ export function getMarket(slug: string): Market | undefined {
   return getGold().markets.find((m) => m.market_slug === slug);
 }
 
-export function marketsByTheme(): { theme: Theme; markets: Market[] }[] {
+export interface EventHeadline {
+  event_title: string;
+  /** Issue la plus probable parmi les marchés lisibles de l'événement (sinon, parmi tous). */
+  lead: Market;
+  outcomes: number;
+  liquidity_usd: number;
+}
+
+export interface ThemeView {
+  theme: Theme;
+  headlines: EventHeadline[];
+  markets: Market[];
+}
+
+/**
+ * Vue « à la une » : un événement = une carte, montrant son issue la plus probable.
+ * Pourquoi pas les marchés les plus liquides ? Sur les données réelles, la liquidité se
+ * concentre sur des issues très improbables (0,2 %) : on afficherait surtout ce qui n'arrivera pas.
+ */
+export function themeViews(maxEvents = 6): ThemeView[] {
   const gold = getGold();
   return gold.themes
-    .map((theme) => ({ theme, markets: gold.markets.filter((m) => m.theme_id === theme.theme_id) }))
-    .filter((group) => group.markets.length > 0);
+    .map((theme) => {
+      const markets = gold.markets.filter((m) => m.theme_id === theme.theme_id);
+      const byEvent = new Map<string, Market[]>();
+      for (const m of markets) byEvent.set(m.event_title, [...(byEvent.get(m.event_title) ?? []), m]);
+      const headlines = [...byEvent.entries()]
+        .map(([event_title, ms]) => {
+          const readable = ms.filter((m) => m.signal_quality !== "inexploitable");
+          const pool = readable.length ? readable : ms;
+          const lead = pool.reduce((a, b) => (b.implied_probability > a.implied_probability ? b : a));
+          return {
+            event_title,
+            lead,
+            outcomes: ms.length,
+            liquidity_usd: ms.reduce((sum, m) => sum + (m.liquidity_usd ?? 0), 0),
+          };
+        })
+        .sort((a, b) => b.liquidity_usd - a.liquidity_usd)
+        .slice(0, maxEvents);
+      return { theme, headlines, markets };
+    })
+    .filter((v) => v.markets.length > 0);
 }

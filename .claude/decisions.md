@@ -28,3 +28,8 @@
 **Contexte :** Web app voulue, coût zéro, fiable et sécurisée, 80/20 ; ingestion impossible depuis la France (DNS ANJ).
 **Décision :** Next.js en export statique sur GitHub Pages (OIDC, aucun secret) ; ingestion quotidienne en GitHub Actions ; bronze versionné sur une branche orpheline `data` ; export gold → JSON seulement si tous les tests dbt passent.
 **Raison :** Aucun serveur ni base exposés, 0 €, zéro compte tiers. Le site garde toujours la dernière version saine. Vercel écarté (token de déploiement nécessaire), stockage objet écarté (compte + secret).
+
+### 2026-10-17 — Données réelles : exclure l'illisible, afficher par événement
+**Contexte :** 1er run live : 17 marchés sans aucun échange ni carnet exploitable ; sur 462 marchés, la liquidité se concentre sur des issues à 0,2-0,4 %.
+**Décision :** Le mart exclut les marchés sans probabilité lisible (pas de chiffre inventé). Le site affiche une carte par événement avec son issue la plus probable (parmi les marchés non inexploitables), triée par liquidité totale ; liste complète repliée.
+**Raison :** Honnêteté de la mesure, et un tableau de bord qui montre ce qui est anticipé plutôt que ce qui n'arrivera pas.
