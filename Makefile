@@ -113,10 +113,11 @@ tags: ## Tags Gamma disponibles (choisir la watchlist)  →  make tags Q=fed
 ##@ Qualité (make check = exactement la CI)
 
 .PHONY: lint
-lint: ## Ruff (lint + format) et mypy strict
+lint: ## Ruff (lint + format), mypy strict, workflows GitHub (actionlint)
 	uv run ruff check .
 	uv run ruff format --check .
 	uv run mypy
+	uvx --from actionlint-py==1.7.12.25 actionlint
 
 .PHONY: format
 format: ## Formate et corrige automatiquement

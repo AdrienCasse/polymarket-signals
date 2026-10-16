@@ -55,7 +55,7 @@ jobs:
         if: github.event_name != 'push'
         run: POLYSIGNALS_DATA_DIR="$LAKE" uv run polysignals ingest --source live
 
-      - name: Versionner la couche bronze (même si l'ingestion a échoué : le manifeste le trace)
+      - name: "Versionner la couche bronze (même en cas d'échec, le manifeste le trace)"
         if: always() && github.event_name != 'push'
         run: |
           cd "$LAKE"
@@ -64,10 +64,10 @@ jobs:
           git commit -q -m "data: run $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q origin data
 
-      - name: dbt build (tous les tests)
+      - name: "dbt build (tous les tests)"
         run: make build DATA_DIR="$LAKE"
 
-      - name: Export gold (refusé si un test a échoué ou si aucun marché)
+      - name: "Export gold (refusé si un test a échoué ou si aucun marché)"
         run: make web-data DATA_DIR="$LAKE"
 
       - uses: actions/setup-node@v4
