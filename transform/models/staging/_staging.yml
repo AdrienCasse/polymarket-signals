@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_gamma__events
+    description: "Événements Gamma typés. Grain : événement × instantané d'ingestion."
+    columns:
+      - name: record_id
+        data_tests: [unique, not_null]
+      - name: event_id
+        data_tests: [not_null]
+
+  - name: stg_gamma__event_tags
+    description: "Tags du dernier état connu de chaque événement. Grain : événement × tag."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [event_id, tag_slug]
+    columns:
+      - name: tag_slug
+        data_tests: [not_null]
+
+  - name: stg_gamma__market_snapshots
+    description: "Marchés aplatis depuis les événements. Grain : marché × instantané."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [market_id, snapshot_at]
+    columns:
+      - name: market_id
+        data_tests: [not_null]
+      - name: question
+        data_tests: [not_null]
+
+  - name: stg_clob__price_history
+    description: "Points d'historique CLOB dédupliqués. Grain : token × horodatage."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [token_id, price_at]
+    columns:
+      - name: price
+        data_tests: [not_null, is_probability]
+
+  - name: stg_ingestion_runs
+    description: Un run d'ingestion par ligne (statut, durée, compteurs par flux).
+    columns:
+      - name: run_id
+        data_tests: [unique, not_null]
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["success", "failed", "running"]

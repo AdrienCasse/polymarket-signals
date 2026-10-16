@@ -1,0 +1,96 @@
+version: 2
+
+models:
+  - name: dim_markets
+    description: Dernier état connu de chaque marché (question, événement, token « Yes », échéance).
+    columns:
+      - name: market_id
+        data_tests: [unique, not_null]
+
+  - name: fct_market_snapshots
+    description: Série construite par nos ingestions (probabilité, écart, liquidité à chaque passage).
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [market_id, snapshot_at]
+    columns:
+      - name: market_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_markets')
+                field: market_id
+
+  - name: fct_daily_prices
+    description: "Probabilité de clôture quotidienne de l'issue « Yes ». Grain : marché × jour."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [market_id, price_date]
+    columns:
+      - name: close_probability
+        data_tests: [not_null, is_probability]
+
+  - name: mart_macro_watchlist
+    description: >
+      Interface publique du projet : un marché ouvert de la watchlist par ligne, avec sa
+      probabilité implicite, ses variations, la qualité du signal et pourquoi il compte pour un
+      investisseur passif. Schéma garanti par un contrat dbt.
+    config:
+      contract: {enforced: true}
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [market_id, theme_id]
+    columns:
+      - {name: market_id, data_type: varchar, constraints: [{type: not_null}]}
+      - {name: theme_id, data_type: varchar, constraints: [{type: not_null}]}
+      - {name: theme_label, data_type: varchar}
+      - {name: event_title, data_type: varchar}
+      - {name: question, data_type: varchar, constraints: [{type: not_null}]}
+      - {name: market_slug, data_type: varchar}
+      - name: implied_probability
+        data_type: double
+        description: Point milieu si l'écart ≤ 10 pts, sinon dernier prix échangé.
+        data_tests: [not_null, is_probability]
+      - {name: change_7d, data_type: double, description: "Variation en points de probabilité sur 7 jours."}
+      - {name: change_30d, data_type: double}
+      - {name: min_90d, data_type: double}
+      - {name: max_90d, data_type: double}
+      - {name: best_bid, data_type: double}
+      - {name: best_ask, data_type: double}
+      - {name: spread, data_type: double}
+      - {name: last_trade_price, data_type: double}
+      - {name: liquidity_usd, data_type: double}
+      - {name: volume_24h_usd, data_type: double}
+      - {name: end_at, data_type: timestamptz}
+      - {name: days_to_resolution, data_type: integer}
+      - name: signal_quality
+        data_type: varchar
+        description: solide / fragile / inexploitable (voir academy/02-carnet-ordres-liquidite.md).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["solide", "fragile", "inexploitable"]
+      - {name: quality_reasons, data_type: "varchar[]"}
+      - {name: resolution_source, data_type: varchar}
+      - {name: why_it_matters, data_type: varchar}
+      - {name: academy_lesson, data_type: varchar}
+      - {name: as_of, data_type: timestamptz}
+
+exposures:
+  - name: polysignals_explain
+    type: application
+    maturity: medium
+    owner: {name: Adrien Casse}
+    description: CLI pédagogique `polysignals explain` / `polysignals watchlist`.
+    depends_on: [ref('mart_macro_watchlist'), ref('fct_daily_prices')]
+
+  - name: fintrack_contexte_macro
+    type: application
+    maturity: low
+    owner: {name: Adrien Casse}
+    description: >
+      (Prévu) Encart « contexte macro » de fintrack : informe, ne déclenche jamais d'action
+      sur le DCA. Consommera uniquement mart_macro_watchlist.
+    depends_on: [ref('mart_macro_watchlist')]

@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: int_event_themes
+    description: Rattachement événement → thème de la watchlist (par tag ou par slug).
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [event_id, theme_id]
+
+  - name: int_market_snapshots_priced
+    description: >
+      Calculs de prix par instantané : issue « Yes », écart achat/vente et probabilité implicite
+      selon la règle d'affichage de Polymarket (macro `implied_probability`).
+    columns:
+      - name: implied_probability
+        data_tests: [is_probability]
+      - name: yes_price
+        data_tests: [is_probability]
+      - name: spread
+        data_tests: [is_probability]
+
+unit_tests:
+  - name: implied_probability_uses_midpoint_or_last_trade
+    description: >
+      Écart serré → point milieu ; écart > 10 points → dernier prix échangé ; carnet vide →
+      dernier prix échangé. C'est la règle qui transforme un carnet d'ordres en probabilité.
+    model: int_market_snapshots_priced
+    given:
+      - input: ref('stg_gamma__market_snapshots')
+        rows:
+          - {market_id: tight, best_bid: 0.61, best_ask: 0.63, last_trade_price: 0.60,
+             outcomes: "['Yes','No']", clob_token_ids: "['t1','t2']"}
+          - {market_id: wide, best_bid: 0.30, best_ask: 0.52, last_trade_price: 0.41,
+             outcomes: "['Yes','No']", clob_token_ids: "['w1','w2']"}
+          - {market_id: empty, best_bid: null, best_ask: null, last_trade_price: 0.07,
+             outcomes: "['Yes','No']", clob_token_ids: "['e1','e2']"}
+    expect:
+      rows:
+        - {market_id: tight, implied_probability: 0.62, spread: 0.02, yes_token_id: t1, is_binary: true}
+        - {market_id: wide, implied_probability: 0.41, spread: 0.22, yes_token_id: w1, is_binary: true}
+        - {market_id: empty, implied_probability: 0.07, spread: null, yes_token_id: e1, is_binary: true}

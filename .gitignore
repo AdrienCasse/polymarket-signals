@@ -1,0 +1,36 @@
+# Données locales (bronze = source de vérité locale, entrepôt reconstructible)
+data/
+data-demo/
+data-live/
+.check-data/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+
+# dbt
+transform/target/
+transform/logs/
+transform/dbt_packages/
+transform/.user.yml
+logs/
+
+# Environnement (aucun secret n'est nécessaire, mais on ne versionne jamais un .env)
+.env
+.env.*
+!.env.example
+
+.DS_Store
+
+# Web
+web/node_modules/
+web/.next/
+web/out/
+web/data/
+web/next-env.d.ts
+web/*.tsbuildinfo

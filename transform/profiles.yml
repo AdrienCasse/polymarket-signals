@@ -1,0 +1,8 @@
+# Aucun secret : DuckDB est un fichier local, reconstructible à partir de la couche bronze.
+polysignals:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('POLYSIGNALS_DATA_DIR', '../data') }}/warehouse.duckdb"
+      threads: 4

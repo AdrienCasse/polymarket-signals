@@ -1,0 +1,22 @@
+version: 2
+
+seeds:
+  - name: themes
+    description: Thèmes macro suivis et pourquoi ils comptent pour un investisseur passif français.
+    columns:
+      - name: theme_id
+        data_tests: [unique, not_null]
+  - name: watchlist_selectors
+    description: >
+      Source unique de la watchlist, lue par l'ingestion ET par dbt. selector_type : `tag`
+      (slug de tag Gamma, voir `polysignals tags`) ou `event` (slug d'un événement précis).
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [selector_type, selector_value]
+    columns:
+      - name: selector_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["tag", "event"]

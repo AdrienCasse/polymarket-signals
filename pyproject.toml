@@ -1,0 +1,65 @@
+[project]
+name = "polysignals"
+version = "0.1.0"
+description = "Lecture seule des marchés prédictifs Polymarket : pipeline data (bronze → silver → gold) et pédagogie"
+authors = [
+    { name = "Adrien Casse" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.5.6",
+    "httpx>=0.28.1",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.16.0",
+    "rich>=15.0.0",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+polysignals = "polysignals.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.10.10,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+# dbt fait partie du pipeline (silver/gold) : installé par défaut avec `uv sync`
+transform = [
+    "dbt-duckdb>=1.9",
+]
+dev = [
+    "mypy>=2.4.0",
+    "pip-audit>=2.10.1",
+    "pytest>=9.1.1",
+    "respx>=0.23.1",
+    "ruff>=0.17.0",
+]
+
+[tool.uv]
+default-groups = ["transform", "dev"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/W/F : base, I : imports, B : bugs, S : sécurité (bandit), UP : syntaxe moderne,
+# SIM : simplifications, RUF : règles ruff
+select = ["E", "W", "F", "I", "B", "S", "UP", "SIM", "RUF"]
+# B008 : typer.Option() en valeur par défaut = idiome typer
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S603", "S607"]
+
+[tool.mypy]
+strict = true
+packages = ["polysignals"]
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "e2e: pipeline complet (ingestion fixtures + dbt build), plus lent",
+]

@@ -1,0 +1,296 @@
+[
+ {
+  "id": "9001",
+  "slug": "fed-decision-december-2026",
+  "title": "Décision de la Fed en décembre 2026 ?",
+  "endDate": "2026-12-16T19:00:00Z",
+  "active": true,
+  "closed": false,
+  "tags": [
+   {
+    "id": "100",
+    "slug": "fed-rates",
+    "label": "Fed Rates"
+   },
+   {
+    "id": "1",
+    "slug": "economy",
+    "label": "Economy"
+   }
+  ],
+  "markets": [
+   {
+    "id": "90011",
+    "slug": "fed-cut-25-dec-2026",
+    "question": "La Fed baisse-t-elle ses taux de 25 pb ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015f9b",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2026-12-16T19:00:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.620\", \"0.380\"]",
+    "clobTokenIds": "[\"900111\", \"900112\"]",
+    "active": true,
+    "closed": false,
+    "bestBid": 0.61,
+    "bestAsk": 0.63,
+    "spread": 0.02,
+    "lastTradePrice": 0.62,
+    "liquidity": "420000.00",
+    "liquidityNum": 420000,
+    "volume": "8900000.00",
+    "volumeNum": 8900000,
+    "volume24hr": 310000,
+    "oneDayPriceChange": 0.02,
+    "oneWeekPriceChange": 0.07,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   },
+   {
+    "id": "90012",
+    "slug": "fed-no-change-dec-2026",
+    "question": "La Fed laisse-t-elle ses taux inchangés ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015f9c",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2026-12-16T19:00:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.330\", \"0.670\"]",
+    "clobTokenIds": "[\"900121\", \"900122\"]",
+    "active": true,
+    "closed": false,
+    "bestBid": 0.32,
+    "bestAsk": 0.34,
+    "spread": 0.02,
+    "lastTradePrice": 0.33,
+    "liquidity": "380000.00",
+    "liquidityNum": 380000,
+    "volume": "6100000.00",
+    "volumeNum": 6100000,
+    "volume24hr": 250000,
+    "oneDayPriceChange": -0.02,
+    "oneWeekPriceChange": -0.06,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   },
+   {
+    "id": "90013",
+    "slug": "fed-cut-50-dec-2026",
+    "question": "La Fed baisse-t-elle ses taux de 50 pb ou plus ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015f9d",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2026-12-16T19:00:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.040\", \"0.960\"]",
+    "clobTokenIds": "[\"900131\", \"900132\"]",
+    "active": true,
+    "closed": false,
+    "bestBid": 0.035,
+    "bestAsk": 0.045,
+    "spread": 0.01,
+    "lastTradePrice": 0.04,
+    "liquidity": "95000.00",
+    "liquidityNum": 95000,
+    "volume": "1200000.00",
+    "volumeNum": 1200000,
+    "volume24hr": 18000,
+    "oneDayPriceChange": 0.0,
+    "oneWeekPriceChange": -0.01,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   }
+  ]
+ },
+ {
+  "id": "9002",
+  "slug": "ecb-cut-december-2026",
+  "title": "La BCE baisse-t-elle ses taux en décembre 2026 ?",
+  "endDate": "2026-12-17T13:15:00Z",
+  "active": true,
+  "closed": false,
+  "tags": [
+   {
+    "id": "200",
+    "slug": "ecb",
+    "label": "ECB"
+   },
+   {
+    "id": "1",
+    "slug": "economy",
+    "label": "Economy"
+   }
+  ],
+  "markets": [
+   {
+    "id": "90021",
+    "slug": "ecb-cut-december-2026",
+    "question": "La BCE baisse-t-elle ses taux en décembre ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015fa5",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2026-12-17T13:15:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.410\", \"0.590\"]",
+    "clobTokenIds": "[\"900211\", \"900212\"]",
+    "active": true,
+    "closed": false,
+    "bestBid": 0.3,
+    "bestAsk": 0.52,
+    "spread": 0.22,
+    "lastTradePrice": 0.41,
+    "liquidity": "3200.00",
+    "liquidityNum": 3200,
+    "volume": "41000.00",
+    "volumeNum": 41000,
+    "volume24hr": 600,
+    "oneDayPriceChange": 0.11,
+    "oneWeekPriceChange": 0.15,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   }
+  ]
+ },
+ {
+  "id": "9003",
+  "slug": "us-cpi-above-3-november-2026",
+  "title": "Inflation américaine (CPI) au-dessus de 3 % en novembre 2026 ?",
+  "endDate": "2026-12-10T13:30:00Z",
+  "active": true,
+  "closed": false,
+  "tags": [
+   {
+    "id": "300",
+    "slug": "inflation",
+    "label": "Inflation"
+   },
+   {
+    "id": "1",
+    "slug": "economy",
+    "label": "Economy"
+   }
+  ],
+  "markets": [
+   {
+    "id": "90031",
+    "slug": "us-cpi-above-3-nov-2026",
+    "question": "Le CPI américain dépasse-t-il 3 % sur un an ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015faf",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2026-12-10T13:30:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.270\", \"0.730\"]",
+    "clobTokenIds": "[\"900311\", \"900312\"]",
+    "active": true,
+    "closed": false,
+    "bestBid": 0.26,
+    "bestAsk": 0.28,
+    "spread": 0.02,
+    "lastTradePrice": 0.27,
+    "liquidity": "64000.00",
+    "liquidityNum": 64000,
+    "volume": "930000.00",
+    "volumeNum": 930000,
+    "volume24hr": 21000,
+    "oneDayPriceChange": -0.01,
+    "oneWeekPriceChange": -0.04,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   }
+  ]
+ },
+ {
+  "id": "9004",
+  "slug": "us-recession-2026",
+  "title": "Récession aux États-Unis en 2026 ?",
+  "endDate": "2027-02-28T00:00:00Z",
+  "active": true,
+  "closed": false,
+  "tags": [
+   {
+    "id": "400",
+    "slug": "recession",
+    "label": "Recession"
+   },
+   {
+    "id": "1",
+    "slug": "economy",
+    "label": "Economy"
+   }
+  ],
+  "markets": [
+   {
+    "id": "90041",
+    "slug": "us-recession-2026",
+    "question": "Les États-Unis entrent-ils en récession en 2026 ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015fb9",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2027-02-28T00:00:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.140\", \"0.860\"]",
+    "clobTokenIds": "[\"900411\", \"900412\"]",
+    "active": true,
+    "closed": false,
+    "bestBid": 0.135,
+    "bestAsk": 0.145,
+    "spread": 0.01,
+    "lastTradePrice": 0.14,
+    "liquidity": "510000.00",
+    "liquidityNum": 510000,
+    "volume": "12400000.00",
+    "volumeNum": 12400000,
+    "volume24hr": 140000,
+    "oneDayPriceChange": -0.005,
+    "oneWeekPriceChange": -0.02,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   }
+  ]
+ },
+ {
+  "id": "9005",
+  "slug": "us-recession-2025",
+  "title": "Récession aux États-Unis en 2025 ?",
+  "endDate": "2026-02-28T00:00:00Z",
+  "active": false,
+  "closed": true,
+  "tags": [
+   {
+    "id": "400",
+    "slug": "recession",
+    "label": "Recession"
+   }
+  ],
+  "markets": [
+   {
+    "id": "90051",
+    "slug": "us-recession-2025",
+    "question": "Les États-Unis entrent-ils en récession en 2025 ?",
+    "conditionId": "0x0000000000000000000000000000000000000000000000000000000000015fc3",
+    "description": "Données synthétiques polysignals (fixture de test).",
+    "resolutionSource": "https://example.org/source-officielle",
+    "endDate": "2026-02-28T00:00:00Z",
+    "outcomes": "[\"Yes\", \"No\"]",
+    "outcomePrices": "[\"0.000\", \"1.000\"]",
+    "clobTokenIds": "[\"900511\", \"900512\"]",
+    "active": false,
+    "closed": true,
+    "bestBid": 0.0,
+    "bestAsk": 0.001,
+    "spread": 0.001,
+    "lastTradePrice": 0.0,
+    "liquidity": "0.00",
+    "liquidityNum": 0,
+    "volume": "15000000.00",
+    "volumeNum": 15000000,
+    "volume24hr": 0,
+    "oneDayPriceChange": 0.0,
+    "oneWeekPriceChange": 0.0,
+    "negRisk": false,
+    "updatedAt": "2026-10-13T00:00:00+00:00"
+   }
+  ]
+ }
+]

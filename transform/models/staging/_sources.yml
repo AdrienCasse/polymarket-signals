@@ -1,0 +1,37 @@
+version: 2
+
+# Couche bronze : fichiers JSONL gzip écrits par `polysignals ingest` (voir src/polysignals/bronze.py).
+# Lus via les macros DuckDB bronze_records / bronze_runs (macros/bronze_readers.sql, on-run-start).
+# Le schéma de l'enveloppe est FIXE ; le contenu brut de l'API reste en JSON dans `payload`,
+# et c'est la couche silver qui l'interprète. Partitions Hive `dt=` exposées en colonne.
+sources:
+  - name: bronze
+    description: Réponses brutes des API publiques Polymarket, immuables et dédupliquées.
+    tables:
+      - name: gamma_events
+        description: "Un enregistrement = un événement Gamma (avec ses marchés imbriqués) à un instant donné."
+        config:
+          external_location: >-
+            bronze_records('{{ env_var('POLYSIGNALS_DATA_DIR', '../data') }}/bronze/gamma/events/dt=*/*.jsonl.gz')
+        columns: &envelope
+          - name: record_id
+            description: "sha256(source | endpoint | clé | payload canonique) : clé d'idempotence."
+            data_tests: [unique, not_null]
+          - name: ingested_at
+            data_tests: [not_null]
+          - name: contract_ok
+            description: Le payload respecte-t-il le contrat pydantic (src/polysignals/models.py) ?
+      - name: clob_prices_history
+        description: "Un enregistrement = l'historique de prix d'une issue (token) au moment de l'ingestion."
+        config:
+          external_location: >-
+            bronze_records('{{ env_var('POLYSIGNALS_DATA_DIR', '../data') }}/bronze/clob/prices_history/dt=*/*.jsonl.gz')
+        columns: *envelope
+      - name: ingestion_runs
+        description: Manifestes d'exécution de l'ingestion (un fichier JSON par run).
+        config:
+          external_location: >-
+            bronze_runs('{{ env_var('POLYSIGNALS_DATA_DIR', '../data') }}/bronze/_runs/*.json')
+        columns:
+          - name: run_id
+            data_tests: [unique, not_null]

@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+/* Palette héritée de fintrack (air de famille) : sombre, accent or unique, sémantique teal/ambre/rouge.
+   Contrastes WCAG AA vérifiés sur --color-bg pour text-1/2/3. */
+@theme {
+  --color-bg: #0c0c0b;
+  --color-card: #141412;
+  --color-hover: #1b1b18;
+  --color-sunken: #090908;
+  --color-line: rgb(255 255 255 / 0.07);
+  --color-line-hi: rgb(255 255 255 / 0.14);
+  --color-gold: #cfae62;
+  --color-gold-dim: rgb(207 174 98 / 0.55);
+  --color-gold-glow: rgb(207 174 98 / 0.09);
+  --color-teal: #4cc9a4;
+  --color-amber: #e2b04a;
+  --color-red: #f07a7a;
+  --color-text-1: #eceae4;
+  --color-text-2: #a6a399;
+  --color-text-3: #7d7a71;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-card: 12px;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Contenu long (leçons) ─────────────────────────────────────────────── */
+.prose-ps {
+  color: var(--color-text-2);
+  line-height: 1.75;
+  font-size: 15px;
+}
+.prose-ps > * + * { margin-top: 1rem; }
+.prose-ps h1 { display: none; } /* le titre est rendu par la page */
+.prose-ps h2 { color: var(--color-text-1); font-size: 1.25rem; font-weight: 600; margin-top: 2.25rem; letter-spacing: -0.01em; }
+.prose-ps h3 { color: var(--color-text-1); font-size: 1.05rem; font-weight: 600; margin-top: 1.75rem; }
+.prose-ps strong { color: var(--color-text-1); font-weight: 600; }
+.prose-ps a { color: var(--color-gold); text-decoration: underline; text-underline-offset: 3px; }
+.prose-ps ul, .prose-ps ol { padding-left: 1.25rem; }
+.prose-ps ul { list-style: disc; }
+.prose-ps ol { list-style: decimal; }
+.prose-ps li + li { margin-top: 0.35rem; }
+.prose-ps li::marker { color: var(--color-text-3); }
+.prose-ps code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: 0.1em 0.35em;
+  color: var(--color-text-1);
+}
+.prose-ps pre {
+  background: var(--color-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.prose-ps pre code { background: none; border: 0; padding: 0; }
+.prose-ps blockquote {
+  border-left: 2px solid var(--color-gold);
+  background: var(--color-gold-glow);
+  padding: 0.75rem 1rem;
+  border-radius: 0 10px 10px 0;
+  color: var(--color-text-1);
+}
+.prose-ps .table-wrap { overflow-x: auto; }
+.prose-ps table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.prose-ps th { text-align: left; color: var(--color-text-1); font-weight: 600; }
+.prose-ps th, .prose-ps td { padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--color-line); vertical-align: top; }

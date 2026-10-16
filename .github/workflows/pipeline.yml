@@ -1,0 +1,104 @@
+name: Pipeline quotidien
+
+# Ingestion (API publiques, lecture seule) → bronze versionné sur la branche `data`
+# → dbt build (tous les tests) → export gold → site statique → GitHub Pages.
+# Règle : si un test échoue, rien n'est publié ; le site garde la dernière version saine.
+on:
+  schedule:
+    - cron: "17 5 * * *" # 05:17 UTC chaque jour (hors de l'heure pile, moins de congestion)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["web/**", "transform/**", "academy/**", "src/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+env:
+  LAKE: ${{ github.workspace }}/lake
+  NEXT_TELEMETRY_DISABLED: 1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write # uniquement pour pousser la branche `data`
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+
+      - name: Monter la branche data (créée au premier run)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch --depth=1 origin data; then
+            git worktree add "$LAKE" FETCH_HEAD
+            git -C "$LAKE" switch -c data
+          else
+            git worktree add --detach "$LAKE"
+            git -C "$LAKE" checkout -q --orphan data
+            git -C "$LAKE" rm -rfq .
+            printf '*.duckdb\n*.duckdb.wal\n' > "$LAKE/.gitignore"
+            printf '# Couche bronze de polymarket-signals\n\nDonnées brutes immuables, écrites par le pipeline quotidien. Ne pas modifier à la main.\n' > "$LAKE/README.md"
+          fi
+
+      - name: Ingestion live
+        if: github.event_name != 'push'
+        run: POLYSIGNALS_DATA_DIR="$LAKE" uv run polysignals ingest --source live
+
+      - name: Versionner la couche bronze (même si l'ingestion a échoué : le manifeste le trace)
+        if: always() && github.event_name != 'push'
+        run: |
+          cd "$LAKE"
+          git add -A
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -q -m "data: run $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q origin data
+
+      - name: dbt build (tous les tests)
+        run: make build DATA_DIR="$LAKE"
+
+      - name: Export gold (refusé si un test a échoué ou si aucun marché)
+        run: make web-data DATA_DIR="$LAKE"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build du site
+        working-directory: web
+        env:
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          npm ci --ignore-scripts --no-fund --no-audit
+          npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write # OIDC : aucun secret de déploiement stocké
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

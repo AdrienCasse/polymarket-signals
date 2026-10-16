@@ -1,0 +1,50 @@
+name: polysignals
+version: "0.1.0"
+config-version: 2
+profile: polysignals
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages", "logs"]
+
+on-run-start:
+  - "{{ create_bronze_readers() }}"
+
+vars:
+  # Règle d'affichage de Polymarket : au-delà de cet écart achat/vente, le point milieu
+  # n'est plus fiable et on affiche le dernier prix échangé
+  midpoint_max_spread: 0.10
+  # Qualité du signal (voir academy/02-carnet-ordres-liquidite.md)
+  quality:
+    unusable_spread: 0.10
+    unusable_liquidity: 1000
+    fragile_spread: 0.03
+    fragile_liquidity: 100000
+    fragile_horizon_days: 365
+
+models:
+  polysignals:
+    +persist_docs: {relation: true, columns: true}
+    staging:
+      +materialized: view
+      +schema: silver
+    intermediate:
+      +materialized: view
+      +schema: silver
+    marts:
+      +materialized: table
+      +schema: gold
+
+seeds:
+  polysignals:
+    +schema: ref
+    themes:
+      +column_types: {theme_id: varchar, theme_label: varchar, why_it_matters: varchar, academy_lesson: varchar}
+    watchlist_selectors:
+      +column_types: {theme_id: varchar, selector_type: varchar, selector_value: varchar}
+
+data_tests:
+  +store_failures: false
