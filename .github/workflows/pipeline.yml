@@ -70,7 +70,7 @@ jobs:
       - name: "Export gold (refusé si un test a échoué ou si aucun marché)"
         run: make web-data DATA_DIR="$LAKE"
 
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: web/.nvmrc
           cache: npm
