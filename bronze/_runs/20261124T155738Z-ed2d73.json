@@ -1,0 +1,20 @@
+{
+  "run_id": "20261124T155738Z-ed2d73",
+  "mode": "live",
+  "started_at": "2026-11-24T15:57:38.348828+00:00",
+  "finished_at": "2026-11-24T15:58:04.481845+00:00",
+  "status": "success",
+  "error": null,
+  "counts": {
+    "gamma.events": {
+      "received": 75,
+      "written": 75,
+      "skipped": 0
+    },
+    "clob.prices_history": {
+      "received": 100,
+      "written": 100,
+      "skipped": 0
+    }
+  }
+}
